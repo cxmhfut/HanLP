@@ -12,7 +12,7 @@ public class TestUtility {
     }
 
     public static void ensureFullData() {
-        ensureData("src/data/model/crf", "http://nlp.hankcs.com/download.php?file=data", ".", false);
+        ensureData("data/model/crf", "http://nlp.hankcs.com/download.php?file=data", ".", false);
     }
 
     /**
@@ -60,7 +60,7 @@ public class TestUtility {
      * @return
      */
     public static String ensureTestData(String name, String url) {
-        return ensureData(String.format("src/data/test/%s", name), url);
+        return ensureData(String.format("src/data/%s", name), url);
     }
 
     /**
