@@ -7,30 +7,26 @@ import com.hankcs.hanlp.corpus.io.IOUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
-/**
- * 第一个demo,演示文本分类最基本的调用方式
- *
- * @author hankcs
- */
-public class DemoTextClassification {
+public class SentimentClassify {
     /**
-     * 搜狗文本分类语料库5个类目，每个类目下1000篇文章，共计5000篇文章
+     * 情感语料目录
      */
-    private static final String CORPUS_FOLDER = TestUtility.ensureTestData("搜狗文本分类语料库迷你版", "http://hanlp.linrunsoft.com/release/corpus/sogou-text-classification-corpus-mini.zip");
-    /**
-     * 模型保存路径
-     */
-    private static final String MODEL_PATH = "src/data/models/classification-model.ser";
+    private final static String CORPUS_FOLDER = "src/data/TrainData";
 
+    private final static String MODEL_PATH = "src/data/models/sentiment-model.ser";
 
     public static void main(String[] args) throws IOException {
         IClassifier classifier = new NaiveBayesClassifier(trainOrLoadModel());
-        predict(classifier, "C罗压梅西内马尔蝉联金球奖 2017=C罗年");
-        predict(classifier, "英国造航母耗时8年仍未服役 被中国速度远远甩在身后");
-        predict(classifier, "研究生考录模式亟待进一步专业化");
-        predict(classifier, "如果真想用食物解压,建议可以食用燕麦");
-        predict(classifier, "通用及其部分竞争对手目前正在考虑解决库存问题");
+        Scanner sc = new Scanner(System.in);
+
+        while (sc.hasNext()) {
+            String line = sc.nextLine();
+            predict(classifier, line);
+        }
+
+        sc.close();
     }
 
     private static void predict(IClassifier classifier, String text) {
@@ -39,7 +35,11 @@ public class DemoTextClassification {
 
     private static NaiveBayesModel trainOrLoadModel() throws IOException {
         NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(MODEL_PATH);
-        if (model != null) return model;
+
+        if (model != null) {
+            System.out.println("Load model from " + MODEL_PATH);
+            return model;
+        }
 
         File corpusFolder = new File(CORPUS_FOLDER);
         if (!corpusFolder.exists() || !corpusFolder.isDirectory()) {
@@ -48,10 +48,11 @@ public class DemoTextClassification {
             System.exit(1);
         }
 
-        IClassifier classifier = new NaiveBayesClassifier(); // 创建分类器，更高级的功能请参考IClassifier的接口定义
-        classifier.train(CORPUS_FOLDER);                     // 训练后的模型支持持久化，下次就不必训练了
+        IClassifier classifier = new NaiveBayesClassifier();
+        classifier.train(CORPUS_FOLDER);
         model = (NaiveBayesModel) classifier.getModel();
         IOUtil.saveObjectTo(model, MODEL_PATH);
+
         return model;
     }
 }
