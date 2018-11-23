@@ -5,8 +5,8 @@ import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 import com.hankcs.hanlp.classification.models.NaiveBayesModel;
 import com.hankcs.hanlp.corpus.io.IOUtil;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class SentimentClassify {
@@ -54,5 +54,34 @@ public class SentimentClassify {
         IOUtil.saveObjectTo(model, MODEL_PATH);
 
         return model;
+    }
+
+    public static void process(String inFilename, String outFilename) throws IOException {
+        File inFile = new File(inFilename);
+        File outFile = new File(outFilename);
+
+        if (!inFile.exists()) {
+            System.err.println("输入文件不存在");
+            return;
+        }
+
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(inFile), StandardCharsets.UTF_8));
+        PrintWriter pr = new PrintWriter(
+                new BufferedWriter(
+                        new OutputStreamWriter(
+                                new FileOutputStream(outFile), StandardCharsets.UTF_8)));
+
+        IClassifier classifier = new NaiveBayesClassifier(trainOrLoadModel());
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            String sentiment = classifier.classify(line);
+            pr.println(sentiment + " " + line);
+        }
+
+        br.close();
+        pr.close();
     }
 }
