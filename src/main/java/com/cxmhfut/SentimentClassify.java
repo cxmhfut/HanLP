@@ -2,8 +2,6 @@ package com.cxmhfut;
 
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
-import com.hankcs.hanlp.classification.models.NaiveBayesModel;
-import com.hankcs.hanlp.corpus.io.IOUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +16,7 @@ public class SentimentClassify {
     private final static String MODEL_PATH = "src/data/models/sentiment-model.ser";
 
     public static void main(String[] args) throws IOException {
-        IClassifier classifier = new NaiveBayesClassifier(trainOrLoadModel());
+        IClassifier classifier = new NaiveBayesClassifier(TestUtility.trainOrLoadModel(CORPUS_FOLDER, MODEL_PATH));
         Scanner sc = new Scanner(System.in);
 
         while (sc.hasNext()) {
@@ -33,28 +31,6 @@ public class SentimentClassify {
         System.out.printf("《%s》 属于分类 【%s】\n", text, classifier.classify(text));
     }
 
-    private static NaiveBayesModel trainOrLoadModel() throws IOException {
-        NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(MODEL_PATH);
-
-        if (model != null) {
-            System.out.println("Load model from " + MODEL_PATH);
-            return model;
-        }
-
-        File corpusFolder = new File(CORPUS_FOLDER);
-        if (!corpusFolder.exists() || !corpusFolder.isDirectory()) {
-            System.err.println("没有文本分类语料，请阅读IClassifier.train(java.lang.String)中定义的语料格式与语料下载：" +
-                    "https://github.com/hankcs/HanLP/wiki/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E4%B8%8E%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90");
-            System.exit(1);
-        }
-
-        IClassifier classifier = new NaiveBayesClassifier();
-        classifier.train(CORPUS_FOLDER);
-        model = (NaiveBayesModel) classifier.getModel();
-        IOUtil.saveObjectTo(model, MODEL_PATH);
-
-        return model;
-    }
 
     public static void process(String inFilename, String outFilename) throws IOException {
         File inFile = new File(inFilename);
@@ -73,7 +49,7 @@ public class SentimentClassify {
                         new OutputStreamWriter(
                                 new FileOutputStream(outFile), StandardCharsets.UTF_8)));
 
-        IClassifier classifier = new NaiveBayesClassifier(trainOrLoadModel());
+        IClassifier classifier = new NaiveBayesClassifier(TestUtility.trainOrLoadModel(CORPUS_FOLDER, MODEL_PATH));
 
         String line;
         while ((line = br.readLine()) != null) {
