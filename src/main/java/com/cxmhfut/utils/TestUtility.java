@@ -1,4 +1,4 @@
-package com.cxmhfut;
+package com.cxmhfut.utils;
 
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
