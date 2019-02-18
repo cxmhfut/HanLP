@@ -1,5 +1,6 @@
-package com.cxmhfut;
+package com.cxmhfut.sentiment;
 
+import com.cxmhfut.TestUtility;
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 

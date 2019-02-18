@@ -1,4 +1,4 @@
-package com.cxmhfut;
+package com.cxmhfut.sentiment;
 
 import java.io.IOException;
 
