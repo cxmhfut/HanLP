@@ -10,10 +10,10 @@ public class FileUtil {
         File file = new File(filename);
         StringBuilder text = new StringBuilder();
         try {
-            String read;
+            String line;
             BufferedReader buffer = new BufferedReader(new FileReader(file));
-            while ((read = buffer.readLine()) != null) {
-                text.append(read);
+            while ((line = buffer.readLine()) != null) {
+                text.append(line);
             }
             buffer.close();
         } catch (IOException e) {

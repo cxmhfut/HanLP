@@ -6,7 +6,6 @@ import com.cxmhfut.utils.FileUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.text.DecimalFormat;
 
 public class TrainDataParser {
 
@@ -17,14 +16,12 @@ public class TrainDataParser {
      * 解析训练语料
      */
     void parse() {
-        String jsonString = FileUtil.readFile(TRAINDATA_FILENAME);
-        JSONArray array = JSONArray.parseArray(jsonString);
+        String jsonStr = FileUtil.readFile(TRAINDATA_FILENAME);
+        JSONArray array = JSONArray.parseArray(jsonStr);
         int dataSize = array.size();
         System.out.println("DataSize:" + dataSize);
 
         double total = (double) dataSize;
-
-        DecimalFormat df = new DecimalFormat("#.00");
 
         try {
             File file = new File(OUTPUT_FILENAME);
@@ -33,11 +30,11 @@ public class TrainDataParser {
             for (int i = 0; i < array.size(); i++) {
                 if (i % 100 == 0) {
                     double now = (double) i;
-                    String progress = df.format(((now / total) * 100));
-                    System.out.println("progress:" + progress + "%");
+                    System.err.printf("\rprogress:%.2f%%", (now * 100 / total));
                 }
                 ps.append(parseItem(array.getJSONArray(i)));
             }
+            System.err.println();
 
             System.out.println("写入完成");
 
@@ -58,5 +55,10 @@ public class TrainDataParser {
         int targetTag = targetArray.getInteger(1);
 
         return sourceTag + " " + source + "\n" + targetTag + " " + target + "\n";
+    }
+
+    public static void main(String[] args) {
+        TrainDataParser parser = new TrainDataParser();
+        parser.parse();
     }
 }
