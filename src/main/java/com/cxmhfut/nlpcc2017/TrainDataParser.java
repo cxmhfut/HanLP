@@ -12,6 +12,8 @@ public class TrainDataParser {
     private final static String TRAINDATA_FILENAME = "src/data/nlpcc2017/train_data.json";
     private final static String OUTPUT_FILENAME = "src/data/nlpcc2017/train_data.txt";
 
+    private final static String[] sentimentArray = {"Other", "Like", "Sadness", "Disgust", "Anger", "Happiness"};
+
     /**
      * 解析训练语料
      */
@@ -54,7 +56,8 @@ public class TrainDataParser {
         String target = targetArray.getString(0).trim();
         int targetTag = targetArray.getInteger(1);
 
-        return sourceTag + " " + source + "\n" + targetTag + " " + target + "\n";
+        return sentimentArray[sourceTag] + " " + source + "\n" + sentimentArray[targetTag] + " " + target + "\n";
+//        return source + "\n" + target + "\n";
     }
 
     public static void main(String[] args) {
