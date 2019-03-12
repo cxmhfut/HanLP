@@ -12,7 +12,8 @@ public class SentimentProcess {
 
     public static void main(String[] args) {
         try {
-            SentimentClassify.process(INPUT_FILENAME, OUTPUT_FILENAME);
+            SentimentClassifier classifier = new SentimentClassifier();
+            classifier.process(INPUT_FILENAME, OUTPUT_FILENAME);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("文件处理异常");

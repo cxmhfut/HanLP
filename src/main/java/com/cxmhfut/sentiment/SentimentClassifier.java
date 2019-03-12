@@ -6,9 +6,8 @@ import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
-public class SentimentClassify {
+public class SentimentClassifier {
     /**
      * 情感语料目录
      */
@@ -16,24 +15,26 @@ public class SentimentClassify {
 
     private final static String MODEL_PATH = "src/data/models/sentiment-model.ser";
 
-    public static void main(String[] args) throws IOException {
-        IClassifier classifier = new NaiveBayesClassifier(TestUtility.trainOrLoadModel(CORPUS_FOLDER, MODEL_PATH));
-        Scanner sc = new Scanner(System.in);
+    private IClassifier classifier;
 
-        while (sc.hasNext()) {
-            String line = sc.nextLine();
-            predict(classifier, line);
+    public SentimentClassifier() {
+        try {
+            classifier = new NaiveBayesClassifier(TestUtility.trainOrLoadModel(CORPUS_FOLDER, MODEL_PATH));
+        } catch (IOException e) {
+            System.out.println("Classifier Init Failed.");
+            e.printStackTrace();
         }
-
-        sc.close();
     }
 
-    private static void predict(IClassifier classifier, String text) {
+    public void predict(String text) {
         System.out.printf("《%s》 属于分类 【%s】\n", text, classifier.classify(text));
     }
 
+    public String classify(String text) {
+        return classifier.classify(text);
+    }
 
-    public static void process(String inFilename, String outFilename) throws IOException {
+    public void process(String inFilename, String outFilename) throws IOException {
         File inFile = new File(inFilename);
         File outFile = new File(outFilename);
 
@@ -49,8 +50,6 @@ public class SentimentClassify {
                 new BufferedWriter(
                         new OutputStreamWriter(
                                 new FileOutputStream(outFile), StandardCharsets.UTF_8)));
-
-        IClassifier classifier = new NaiveBayesClassifier(TestUtility.trainOrLoadModel(CORPUS_FOLDER, MODEL_PATH));
 
         String line;
         while ((line = br.readLine()) != null) {
